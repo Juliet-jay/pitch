@@ -3,7 +3,7 @@ from . import main
 from ..models import User, Pitch, Category, Vote, Comment
 from flask_login import login_required, current_user
 from .forms import UpdateProfile, PitchForm, CommentForm, CategoryForm
-from .. import db, photos
+# from .. import db, photos
 
 #Views
 @main.route('/')
@@ -36,3 +36,11 @@ def new_category():
     
     title = 'New category'
     return render_template('new_category.html', category_form = form,title=title)
+@main.route('/categories/<int:id>')
+def category(id):
+    category_ = Category.query.get(id)
+    pitches = Pitch.query.filter_by(category=category_.id).all()
+
+    # pitches=Pitch.get_pitches(id)
+    # title = f'{category.name} page'
+    return render_template('category.html', pitches=pitches, category=category_)
