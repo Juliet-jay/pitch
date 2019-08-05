@@ -44,3 +44,26 @@ def category(id):
     # pitches=Pitch.get_pitches(id)
     # title = f'{category.name} page'
     return render_template('category.html', pitches=pitches, category=category_)
+
+@main.route('/categories/view_pitch/add/<int:id>', methods=['GET', 'POST'])
+@login_required
+def new_pitch(id):
+    '''
+    Function to check Pitches form and fetch data from the fields
+    '''                                             
+    form = PitchForm()
+    category = Category.query.filter_by(id=id).first()
+
+    if category is None:
+        abort(404)
+
+    if form.validate_on_submit():
+        content = form.content.data
+        new_pitch= Pitch(content=content,category= category.id,user_id=current_user.id)
+        new_pitch.save_pitch()
+        return redirect(url_for('.category', id=category.id))
+
+
+    title = 'New Pitch'
+    return render_template('new_pitch.html', title = title, pitch_form = form, category = category)
+
