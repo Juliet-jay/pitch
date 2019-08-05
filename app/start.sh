@@ -1,1 +1,0 @@
-SQLALCHEMY_DATABASE_URI = 'postgres + psycopg2://kathure:1234@localhost/pitches'
