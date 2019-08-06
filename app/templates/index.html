@@ -1,42 +1,34 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
 {% import 'macros.html' as macro%}
-<!-- {% import 'bootstrap/wtf.html' as wtf %} -->
-
-
-{% block styles%}
-    {{ super() }}
-    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
-{% endblock %}
 
 {% block content %}
-<br>
-    <div class="container-fluid" style="font-family: 'Russo One', sans-serif;">
-    <div class="row"> 
-        
-        <div class="container" id="block-text">
-        <br>
-        <div class="col-md-6">
-            <img src="/static/photos/minute.jpg" style= "margin-right: 100%;padding-right: 100%; height:300px;">
-        </div>
-        
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Rokkitt" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Material Design Bootstrap -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.5/css/mdb.min.css" rel="stylesheet">
+        <title>Best Pitch</title>
+    </head>
+    <body style=" background-image: url('https://images.pexels.com/photos/707847/pexels-photo-707847.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'); background-repeat: no-repeat; background-size: cover; background-position: fixed;overflow-y: hidden;overflow-x: hidden;">
+           <div style="text-align: center; margin-top: 25%; color: rgb(223, 194, 184); background-color: rgba(14, 13, 13, 0.671);">
+            <p style=" text-align: center; font-size: 30px;">lets find Awesome pitches and post some more</p>
+            <p style=" font-size: 15px;">PITCH</p>
+           </div>
+    </body>
+        <!-- JQuery -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.6/js/mdb.min.js"></script>
+    </html>
 
-        <br>
-       
-    </div>
-</div>
-
-<hr>
-
-<div class="container">
-    <br>
-    <h2> <strong>PITCH CATEGORIES </strong></h2>
-    <strong style="font-size: 20px;">{{ macro.displayCategoryList(category) }} </strong>
-    <br>
-    <br>
-    
-    
-    <h3 class="add-category"><a class="btn btn-primary" href="/add/category" style="background-color:#9d61b4; float:right;"><span aria-hidden="true"> ADD CATEGORY </span></a></h3>   
-</div>
-
-
-{% endblock  %}
+    {% endblock %}

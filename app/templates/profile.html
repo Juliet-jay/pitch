@@ -1,0 +1,126 @@
+{% extends 'base.html'%}
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+
+<div style=" background-image: url('https://www.limitlesswalls.com/media/catalog/product/2/4/240_F_106780106_BvY7hixLGKuOBYFYaTwGYGtgDAu2wOzx.1538366744.jpg');background-attachment: fixed;background-repeat: no-repeat; background-size: cover; overflow: hidden;">
+
+<div class="wrapper-view" style="background-color: rgba(215, 228, 215, 0.767)">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4" style="margin: 10%" >
+                {% if user.profile_pic_path %}
+                    <img src="{{url_for('static',filename=user.profile_pic_path)}}" style="padding: 20px;"alt="" class="img-thumbnail" id="profpic">
+                {%else%}
+                    <i class="fa fa-camera" style="text-align:center;color:rgb(138, 126, 126);padding-top:8%;" id="profpic"></i>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row" id="profstats" style="font-weight: bold;font-size: 20px;text-align: center;">
+            <div class="col-md-2">
+                <p>Posts</p>
+                <p>0</p>
+            </div>
+            <div class="col-md-2">
+                <p>Following</p>
+                <p>0</p>
+            </div>
+            <div class="col-md-2">
+                <p>Followers</p>
+                <p>0</p>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-lg" href="/user/{{user.username}}/update" role="button" style="margin-top:10px; color: black;border:solid 1px black;">Edit Profile</a>
+            </div>
+    </div>
+    <div class="row" id="mainprofile">
+            <div class="col-md-2" id="bio">
+                {% if user %}
+                    <p>@{{user.username}}</p>
+                    {% if user.bio %}
+                        <h5 style="font-weight:bold;">Bio</h6>
+                        <p> {{user.bio}}</p>
+                    {%else%}
+                        <p> {{user.username| capitalize}} has no bio </p>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-md-6" id="myposts">
+                <div class="row" style="width:100%; border-bottom: solid 1px grey;margin: 0;height:50px;">
+                    <div class="col-md-4">
+                        <a style ="padding: 10px;">My Posts</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a style ="padding: 10px;">Liked Posts</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a style="padding: 10px;">Posts&Comments</a>
+                    </div>
+                </div>
+                {% for pitch in pitches %}
+                    {% if pitch.user_id == current_user.id %}
+        <div class="row" style=" margin: 20px;">
+        <div class="col-md-2" >
+                    {% if user.profile_pic_path %}
+                        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail";>
+                    {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    {% for user in users %}
+                        {% if user.id == pitch.user_id %}
+                            <p style="font-weight: bold;">{{user.username}}</p>
+                        {% endif %}
+                    {% endfor %}
+                    <p>{{pitch.title}}</p>
+                    <p>{{pitch.content}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <i class="fas fa-thumbs-up" style="font-size:20px;margin: 0;"></i>
+                            </div>
+                            <div class="col-md-4">
+                                <p>{{pitch.upvotes}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                        <i class="fas fa-thumbs-down" style="font-size:20px;margin: 0;"></i>
+                                </div>
+                                <div class="col-md-4">
+                                        <p>{{pitch.downvotes}}</p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        {% endif %}
+        <br>
+        {% endfor %}
+                <div class="row" style="width:100%; margin: 0;padding-bottom: 10px;">
+                            
+                            <a class="btn btn-primary btn-lg" href="/timeline" role="button" style="background-color: rgba(180, 178, 54, 0.61); text-align: center; margin-bottom: 50%; margin-top: 20%;">Make Pitch</a>
+                            <div class="row">
+                                <div class="col-md-4" style="margin-left:210px;">
+                                    {% if user.profile_pic_path %}
+                                        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail" id="profpic" style="border:black">
+                                    {%else%}
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStV0EwQH4fiBIO_ashlTIwhyGH-6h_YiKqmocPHndfsiPBWcl4" alt="profile pic" class="img-thumbnail" id="profpic" style="height: 5px; width: 5px;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+{% endblock %}
+

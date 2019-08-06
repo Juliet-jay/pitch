@@ -1,69 +1,86 @@
-from flask import render_template
+from flask import render_template,request,redirect,url_for,abort
+from flask_login import login_required,current_user
 from . import main
-from ..models import User, Pitch, Category, Vote, Comment
-from flask_login import login_required, current_user
-from .forms import UpdateProfile, PitchForm, CommentForm, CategoryForm
-# from .. import db, photos
+from .forms import UpdateProfile,PostAPitch,PostAComment
+from .. import db,photos
+from ..models import User,Pitch,Comment
 
-#Views
 @main.route('/')
-def index():
-    '''
-    View root page function that returns the index page and its data
-    '''
+def landingpage():
 
-   
-    category = Category.get_categories()
+    return render_template('index.html')
 
-
-    return render_template('index.html',  category = category)
-
-@main.route('/add/category', methods=['GET','POST'])
+@main.route('/timeline',methods=['GET','POST'])
 @login_required
-def new_category():
-    '''
-    View new group route function that returns a page with a form to create a category
-    '''
-    form = CategoryForm()
+def timeline():
+    form = PostAPitch()
+    if form.validate_on_submit():
+        new_pitch = Pitch(upvotes=0,downvotes=0,title=form.title.data,content=form.content.data,user_id=current_user.id)
+        new_pitch.save_pitch()
+        return redirect(url_for('main.timeline'))
+    pitches= Pitch.get_pitches()
+    users = User.query.all()
+
+    return render_template('timeline.html',form=form,pitches=pitches,users=users)
+ 
+@main.route('/user/profile/<uname>')
+@login_required
+def profile(uname):
+    user = User.query.filter_by(username = uname).first()
+
+    if user is None:
+        abort(404)
+    pitches = Pitch.query.order_by(Pitch.posted.desc()).all()
+    
+    return render_template('profile.html', user = user, pitches=pitches)
+
+@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@login_required
+def update_profile(uname):
+    user = User.query.filter_by(username = uname).first()
+    
+    if user is None:
+        abort(404)
+    form = UpdateProfile()
 
     if form.validate_on_submit():
-        name = form.name.data
-        new_category = Category(name=name)
-        new_category.save_category()
+        user.bio = form.bio.data
+        db.session.add(user)
+        db.session.commit()
 
+        return redirect(url_for('.profile',uname=user.username))
+
+    return render_template('profile.html',form=form,user =user)
+
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
+@login_required
+def update_pic(uname):
+    user = User.query.filter_by(username = uname).first()
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
+        db.session.commit()
+    return redirect(url_for('main.update_profile',uname=uname))
+
+@main.route('/pitch/new', methods=['GET', 'POST'])
+@login_required
+def new_pitch():
+    pitch_form = PostAPitch()
+    if pitch_form.validate_on_submit():
+        title = pitch_form.title.data
+        pitch = pitch_form.text.data
+
+        # Updated pitch instance
+        new_pitch = Pitch(pitch_title=title, pitch_content=pitch, user=current_user)
+
+        # Save pitch method
+        new_pitch.save_pitch()
         return redirect(url_for('.index'))
 
-    
-    title = 'New category'
-    return render_template('new_category.html', category_form = form,title=title)
-@main.route('/categories/<int:id>')
-def category(id):
-    category_ = Category.query.get(id)
-    pitches = Pitch.query.filter_by(category=category_.id).all()
-
-    # pitches=Pitch.get_pitches(id)
-    # title = f'{category.name} page'
-    return render_template('category.html', pitches=pitches, category=category_)
-
-@main.route('/categories/view_pitch/add/<int:id>', methods=['GET', 'POST'])
-@login_required
-def new_pitch(id):
-    '''
-    Function to check Pitches form and fetch data from the fields
-    '''                                             
-    form = PitchForm()
-    category = Category.query.filter_by(id=id).first()
-
-    if category is None:
-        abort(404)
-
-    if form.validate_on_submit():
-        content = form.content.data
-        new_pitch= Pitch(content=content,category= category.id,user_id=current_user.id)
-        new_pitch.save_pitch()
-        return redirect(url_for('.category', id=category.id))
+    title = 'New pitch'
+    return render_template('pitch.html', title=title)
 
 
-    title = 'New Pitch'
-    return render_template('new_pitch.html', title = title, pitch_form = form, category = category)
+  
 

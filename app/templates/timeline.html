@@ -1,0 +1,133 @@
+{% extends 'base.html'%}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock%}
+{% block content %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+<div class="container-fluid" style="background-color: #ECE2D0;font-family: Arial, Helvetica, sans-serif;
+padding-bottom: 40px;height:768px;overflow-x: hidden;overflow-y:scroll;">
+    <div class="row" id="timeline">
+    <div class="col-md-2" id="utilities">
+        <div style="margin-left:40px;">
+                {% for user in users %}
+                {% if user.id == current_user.id %}
+                    {% if user.profile_pic_path %}
+                        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail" style="border-radius:50%; width:100px;height:100px;">
+                    {% endif %}
+                    <p style="font-weight: bold;">@{{user.username}}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-6" id="myposts">
+            <div class="row" style="width:100%; border-bottom: solid 1px grey;margin: 0;height:50px;">
+                    <div class="col-md-4">
+                        <a style="color:purple;font-size: 20px;">My Timeline</a>
+                    </div>
+            </div>
+        <div class="row" style="width:100%; border-bottom: solid 1px grey;margin: 0;padding-bottom: 10px;">
+            <div class="col-md-8" style="margin-left:100px;">
+                    {{wtf.quick_form(form)}}
+            </div>
+        </div>
+        {% for pitch in pitches %}
+        <div class="row" style="width:100%; border-bottom: solid 1px grey;margin: 0;padding-top:10px;padding-bottom: 10px;">
+        <div class="col-md-2" >
+            {% for user in users %}
+                {% if user.id == pitch.user_id %}
+                    {% if user.profile_pic_path %}
+                        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail" 
+                        style="border-radius:50%; width:70px;height:70px;padding:0;">
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    {% for user in users %}
+                        {% if user.id == pitch.user_id %}
+                            <p style="font-weight: bold;">{{user.username}}</p>
+                        {% endif %}
+                    {% endfor %}
+                    <p>{{pitch.title}}</p>
+                    <p>{{pitch.content}}</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <i class="fas fa-thumbs-up" style="font-size:20px;margin: 0;"></i>
+                            </div>
+                            <div class="col-md-4">
+                                <p>{{pitch.upvotes}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                        <i class="fas fa-thumbs-down" style="font-size:20px;margin: 0;"></i>
+                                </div>
+                                <div class="col-md-4">
+                                        <p>{{pitch.downvotes}}</p>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-md-2">
+                            <button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="background-color: purple;color:white;font:20px;">Comment
+</button>
+                    </div>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                {% for user in users %}
+                    {% if user.id == pitch.user_id %}
+                    <h5 class="modal-title" id="exampleModalLabel" style="font-weight:bold;">@{{user.username}} (Pitch: {{pitch.title}})</h5>
+                    {% endif %}
+                {% endfor %}
+              <button type="button" class="close" data-dismiss="modal" aria-label="exit">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                        <div class="col-md-4">
+                                {% for user in users %}
+                                 {% if user.id == current_user.id %}
+                                 <p style="font-weight: bold;"> Comment by @{{user.username}}</p>
+                                     {% if user.profile_pic_path %}
+                                         <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-thumbnail" style="border-radius:50%; width:100px;height:100px;">
+                                     {% endif %}
+                                 {% endif %}
+                             {% endfor %}
+                         </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+                </div>
+                <div class="row">
+                        {% if pitch.comments %}
+                        <h4 style="font-weight: bold;">Comments</h4>
+                            {%for comment in pitch.comments %}
+                            <div class="col-md-10" style="height:100px;overflow-y:scroll;">
+                            
+                            </div> 
+                            {% endfor %}
+                        {% endif %}     
+                    </div> 
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}
