@@ -16,7 +16,7 @@
 
 ## Description
 
-Pitches is an app for pitching different ideas and let others comment and review them.
+Pitch is an app for pitching different ideas and let others comment and review them.
 
 ------------------------------------------------------------------------
 
